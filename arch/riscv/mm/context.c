@@ -208,6 +208,13 @@ static void set_mm_noasid(struct mm_struct *mm)
 static inline void set_mm(struct mm_struct *prev,
 			  struct mm_struct *next, unsigned int cpu)
 {
+#ifdef CONFIG_RISCV_ROCC
+	/*
+	 * Fence to wait for RoCC memory operations to finish, since
+	 * stap is shared between processor and RoCC accelerators.
+	 */
+	mb();
+#endif
 	/*
 	 * The mm_cpumask indicates which harts' TLBs contain the virtual
 	 * address mapping of the mm. Compared to noasid, using asid
@@ -229,6 +236,13 @@ static int __init asids_init(void)
 {
 	unsigned long old;
 
+#ifdef CONFIG_RISCV_ROCC
+	/*
+	 * Fence to wait for RoCC memory operations to finish, since
+	 * stap is shared between processor and RoCC accelerators.
+	 */
+	mb();
+#endif
 	/* Figure-out number of ASID bits in HW */
 	old = csr_read(CSR_SATP);
 	asid_bits = old | (SATP_ASID_MASK << SATP_ASID_SHIFT);

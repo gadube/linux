@@ -458,6 +458,12 @@ config RISCV_ISA_SVNAPOT
 
 	  If you don't know what to do here, say Y.
 
+config RISCV_ROCC
+	bool "Enable RoCC instructions"
+	default y
+	help
+	  Say N here if you want to disable all non-standard custom instructions
+
 config RISCV_ISA_SVPBMT
 	bool "Svpbmt extension support for supervisor mode page-based memory types"
 	depends on 64BIT && MMU
@@ -704,6 +710,14 @@ config COMPAT
 	  ptrace interface are handled appropriately by the kernel.
 
 	  If you want to execute 32-bit userspace applications, say Y.
+
+config RISCV_TIMEBASE_DIV
+	int "RISC-V timebase divisor"
+	default 1
+	help
+	  Force the kernel to assume that the mtime RTC frequency is an
+	  integer factor slower than reported by the platform.
+	  This makes simulated systems more responsive to user interaction.
 
 config RELOCATABLE
 	bool "Build a relocatable kernel"
